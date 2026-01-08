@@ -2,45 +2,47 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef struct no {
+typedef struct produto {
     int id;
     char * nome;
     int quantidade;
     char * desc;
     float preco;
+} produto;
 
-    struct no *dir;
-    struct no *esq;
-} no;
+produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
+    produto *produto_n = (produto*)malloc(sizeof(produto));
+    if (produto_n == NULL) return NULL;
 
-no* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
-    no *novo = (no*)malloc(sizeof(no));
-    if (novo == NULL) return NULL;
-
-    novo->id = id;
-    novo->quantidade = quantidade;
-    novo->preco = preco;
+    produto_n->id = id;
+    produto_n->quantidade = quantidade;
+    produto_n->preco = preco;
     
-    novo->nome = strdup(nome);
-    novo->desc = strdup(desc);
-    
-    novo->esq = NULL;
-    novo->dir = NULL;
+    produto_n->nome = strdup(nome);
+    produto_n->desc = strdup(desc);
 
-    return novo;
+    return produto_n;
 }
 
-no* inserir(no *raiz, int id, char *nome, int quantidade, char *desc, float preco) {
-    if (raiz == NULL) {
-        return criar_no(id, nome, quantidade, desc, preco);
-    }
+produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
 
-    if (preco < raiz->preco) {
-        raiz->esq = inserir(raiz->esq, id, nome, quantidade, desc, preco);
-    } 
-    else {
-        raiz->dir = inserir(raiz->dir, id, nome, quantidade, desc, preco);
-    }
 
-    return raiz;
+}
+
+// Cria o arquivo inventario inicial se hourver, caso o contrario, apenas abre o arquivo;
+FILE* arquivo_inicial() {
+    FILE *inventario = fopen("inventario.txt", "a+");
+
+    if (inventario == NULL) {
+        printf("Erro ao abrir ou criar o arquivo inventario.txt\n");
+        return NULL;
+    }
+}
+
+int main() {
+    FILE *inventario = arquivo_inicial();
+
+
+
+    return 0;
 }
