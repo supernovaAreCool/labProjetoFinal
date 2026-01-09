@@ -10,6 +10,25 @@ typedef struct produto {
     float preco;
 } produto;
 
+//Isso é para criarmos a lista encadeada de produtos
+produto *inicio = NULL;
+typedef struct listaproduto{
+    produto no;
+    produto *prox;
+    int tam;
+};
+
+void addlista(listaproduto lista, produto a){
+    if (lista->tam==0){
+        inicio = *a;
+        lista->tam++;
+    }else{
+        
+    }
+    return 0;
+}
+
+
 produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto *produto_n = (produto*)malloc(sizeof(produto));
     if (produto_n == NULL) return NULL;
