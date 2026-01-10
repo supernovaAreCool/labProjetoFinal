@@ -20,7 +20,7 @@ void reescrever(){
     produto *atual = inicio;
     FILE * arquivo = fopen("inventario.txt", "w");
     for (int i = 0; i<tam; i++){
-        fprintf(arquivo, "%i\t%s\t%i\t%s\t%f", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        fprintf(arquivo, "%i;%s;%i;%s;%f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
         atual = atual->prox;
     }
 }
@@ -42,7 +42,6 @@ void imprimir(){
     for (int i = 0; i<tam; i++){
         printf("%i %s %i %s %f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
         atual = atual->prox;
-
     }
 }
 
@@ -122,8 +121,28 @@ FILE* arquivo_inicial() {
 }
 
 int main() {
+    int funcionar = 1, opcao;
     FILE *inventario = arquivo_inicial();
     inicializar();
-    imprimir();
+    while (funcionar){
+        printf("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
+        scanf("%i", &opcao);
+        if (opcao==1){
+            
+        }
+        if (opcao==2){
+            imprimir();
+        }
+        if (opcao==3){
+
+        }
+        if (opcao==4){
+
+        }
+        if (opcao==5){
+            funcionar = 0;
+            reescrever();
+        }
+    }
     return 0;
 }
