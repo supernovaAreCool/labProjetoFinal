@@ -15,6 +15,15 @@ typedef struct produto {
 produto *inicio = NULL;
 int tam = 0;
 
+//Essa função serve para escrever o que estiver na lista do programa pro txt, é interessante colocar ela no final de toda função que muda alguma coisa na lista, por exemplo a função adicioinar ou a função remover
+void reescrever(){
+    produto *atual = inicio;
+    FILE * arquivo = fopen("inventario.txt", "w");
+    for (int i = 0; i<tam; i++){
+        fprintf(arquivo, "%i\t%s\t%i\t%s\t%f", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        atual = atual->prox;
+    }
+}
 
 //Adiciona um item ao começo da lista
 void addlista(produto *a){
@@ -30,7 +39,7 @@ void addlista(produto *a){
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
     produto * atual = inicio;
-    for (int i = 0; i<tam-1; i++){
+    for (int i = 0; i<tam; i++){
         printf("%i %s %i %s %f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
         atual = atual->prox;
 
@@ -90,17 +99,15 @@ produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FI
 
 
 void inicializar(){
-    char linha[1023];
+    char linha[1024];
     FILE *arquivo = fopen("inventario.txt", "r");
     while (fgets(linha, sizeof(linha), arquivo) != NULL) {
-        printf("%s\n", linha);
         char *id = strtok(linha, ";");
         char *nome = strtok(NULL, ";");
         char *quantidade = strtok(NULL, ";");
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
-        addlista(criar_no(atoi(id), nome, atoi(quantidade), desc, atof(preco)));
-        tam++;
+        addlista(criar_no(atoi(id), strdup(nome), atoi(quantidade), strdup(desc), atof(preco)));
     }
 }
 
