@@ -8,27 +8,67 @@ typedef struct produto {
     int quantidade;
     char * desc;
     float preco;
+    struct produto *prox;
 } produto;
 
-//Isso é para criarmos a lista encadeada de produtos
+//Duas variáveis globais referentes à lista de produtos
 produto *inicio = NULL;
-typedef struct listaproduto{
-    produto no;
-    produto *prox;
-    int tam;
-};
+int tam = 0;
 
-void addlista(listaproduto lista, produto a){
-    if (lista->tam==0){
-        inicio = *a;
-        lista->tam++;
+
+//Adiciona um item ao começo da lista
+void addlista(produto *a){
+    if (tam==0){
+        inicio = a;
     }else{
-        
+        a->prox = inicio;
+        inicio = a;
     }
-    return 0;
+    tam++;
 }
 
+//Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
+void imprimir(){
+    produto * atual = inicio;
+    for (int i = 0; i<tam-1; i++){
+        printf("%i %s %i %s %f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        atual = atual->prox;
 
+    }
+}
+
+//Pergunta ao usuário qual identificador(pode ser o código do produto ou o nome dele) ele vai usar para remover o produto e depois remove ele, não vai apagar na memória porque deu preguiça
+void removerlista(){
+    int opcao;
+    char * identificador;
+    produto * atual = inicio;
+    printf("Você deseja remover com base no:\n[1] - Código do produto\n[2] - Nome do produto");
+    scanf("%i", &opcao);
+    if (opcao==1){
+        printf("Qual o código do produto?\n");
+        gets(identificador);
+        if (inicio->id == atoi(identificador)){
+            inicio = inicio->prox;
+        }
+        for (int i=0; i<tam-1;i++){
+            if (atual->prox->id == atoi(identificador)){
+                atual->prox = atual->prox->prox;
+            }
+        }
+    }
+    if (opcao==2){
+        printf("Qual o nome do produto?\n");
+        gets(identificador);
+        if(*(inicio->nome) == identificador){
+            inicio = inicio->prox;
+        }
+        for (int i = 0; i<tam-1;i++){
+            if (atual->prox->nome = identificador){
+                atual->prox = atual->prox->prox;
+            }
+        }
+    }
+}
 produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto *produto_n = (produto*)malloc(sizeof(produto));
     if (produto_n == NULL) return NULL;
@@ -48,6 +88,22 @@ produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FI
 
 }
 
+
+void inicializar(){
+    char linha[1023];
+    FILE *arquivo = fopen("inventario.txt", "r");
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        printf("%s\n", linha);
+        char *id = strtok(linha, ";");
+        char *nome = strtok(NULL, ";");
+        char *quantidade = strtok(NULL, ";");
+        char *desc = strtok(NULL, ";");
+        char *preco = strtok(NULL, ";");
+        addlista(criar_no(atoi(id), nome, atoi(quantidade), desc, atof(preco)));
+        tam++;
+    }
+}
+
 // Cria o arquivo inventario inicial se hourver, caso o contrario, apenas abre o arquivo;
 FILE* arquivo_inicial() {
     FILE *inventario = fopen("inventario.txt", "a+");
@@ -60,11 +116,7 @@ FILE* arquivo_inicial() {
 
 int main() {
     FILE *inventario = arquivo_inicial();
-
-
-
+    inicializar();
+    imprimir();
     return 0;
 }
-
-
-//testando esse comentário só para dar git commit e push
