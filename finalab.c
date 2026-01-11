@@ -23,6 +23,8 @@ typedef struct produto {
 //Duas variáveis globais referentes à lista de produtos
 produto *inicio = NULL;
 int tam = 0;
+float v_total = 0.0f;
+unsigned int q_total = 0;
 
 //Essa função serve para escrever o que estiver na lista do programa pro txt, é interessante colocar ela no final de toda função que muda alguma coisa na lista, por exemplo a função adicioinar ou a função remover
 void reescrever(){
@@ -48,8 +50,11 @@ void addlista(produto *a){
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
     produto * atual = inicio;
+
+    printf("ID\tNome\t\tQuantidade\tDescrição\t\tPreço\n");
+
     for (int i = 0; i<tam; i++){
-        printf("%i %s %i %s %f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        printf("%i\t%s\t%i\t\t%s\t\t%f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
         atual = atual->prox;
     }
 }
@@ -116,6 +121,9 @@ void inicializar(){
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
         addlista(criar_no(atoi(id), strdup(nome), atoi(quantidade), strdup(desc), atof(preco)));
+
+        q_total += atoi(quantidade);
+        v_total += atof(preco);
     }
 }
 
@@ -141,6 +149,14 @@ void mensagem(char msg[]) {
     printf("%s", msg);
 }
 
+void relatorio() {
+    imprimir();
+    printf("\nTotal de itens: %d, Valor total: %f, Quantidade total de itens: %u\n", tam, v_total, q_total);
+
+    char s[1];
+    scanf("%s", &s);
+}
+
 void menu() {
     int funcionar = 1, opcao;
     FILE *inventario = arquivo_inicial();
@@ -158,7 +174,7 @@ void menu() {
 
         }
         if (opcao==4){
-
+            relatorio();
         }
         if (opcao==5){
             funcionar = 0;
