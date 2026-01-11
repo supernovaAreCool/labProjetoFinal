@@ -14,7 +14,7 @@ typedef struct produto {
     int id;
     char * nome;
     int quantidade;
-    int n_estoque;
+    int n_restoque;
     char * desc;
     float preco;
     struct produto *prox;
@@ -38,6 +38,7 @@ void reescrever(){
 }
 
 //Adiciona um item ao começo da lista
+<<<<<<< HEAD
 void addlista(int id, char nome, float preco, int quantidade){
     produto *novo = malloc(sizeof(produto));
 
@@ -59,8 +60,17 @@ void addlista(int id, char nome, float preco, int quantidade){
     inicio = novo;
 
     reescrever();
+=======
+void addlista(produto *a){
+    if (tam == 0){
+        inicio = a;
+    }else{
+        a->prox = inicio;
+        inicio = a;
+    }
+    tam++;
+>>>>>>> parent of bb41ed9 (msg)
 }
-
 
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
@@ -102,6 +112,19 @@ produto* pegar_p_via_nome(char nome[]) {
 
         atual = atual->prox;
     }
+}
+produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
+    produto *produto_n = (produto*)malloc(sizeof(produto));
+    if (produto_n == NULL) return NULL;
+
+    produto_n->id = id;
+    produto_n->quantidade = quantidade;
+    produto_n->preco = preco;
+    
+    produto_n->nome = strdup(nome);
+    produto_n->desc = strdup(desc);
+
+    return produto_n;
 }
 
 // isso n tá implemetado, dps eu vejo se dá pra deletar
@@ -146,7 +169,7 @@ FILE* arquivo_inicial() {
 }
 
 void checar_quantidade_produtos(produto *p) {
-    if (p->quantidade >= p->n_estoque) 
+    if (p->quantidade >= p->n_restoque) 
         printf("!!! Produto %s está acima do limite de restoque.", p->nome);
 
     return;
