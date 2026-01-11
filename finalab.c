@@ -77,7 +77,7 @@ void imprimir(){
 void imprimir_produto(produto* p) {
     printf("%i\t%s\t%i\t\t%s\t\t%f\n", p->id, p->nome, p->quantidade, p->desc, p->preco);
 }
-<<<<<<< HEAD
+
 
 
 // Doi minha alma mas dps eu melhoro isso; -supernova
@@ -102,15 +102,9 @@ produto* pegar_p_via_nome(char nome[]) {
 
         atual = atual->prox;
     }
-=======
-<<<<<<< HEAD
-=======
-produto pegar_p_via_nome(char nome[]) {
-    
->>>>>>> 3683e52d9f5075560a212bf171615712b0469660
 }
 
-
+// isso n tá implemetado, dps eu vejo se dá pra deletar
 produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto *produto_n = (produto*)malloc(sizeof(produto));
     if (produto_n == NULL) return NULL;
@@ -124,7 +118,6 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
 
     return produto_n;
 }
->>>>>>> dae228843993f826e415b094b5afd07d23a74924
 
 produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
 
@@ -141,8 +134,8 @@ void inicializar(){
         char *quantidade = strtok(NULL, ";");
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
-        addlista(criar_no(atoi(id), strdup(nome), atoi(quantidade), strdup(desc), atof(preco)));
-
+        addlista(atoi(id), strdup(nome), atoi(quantidade), 0, strdup(desc), atof(preco));
+        
         q_total += atoi(quantidade);
         v_total += atof(preco);
     }
