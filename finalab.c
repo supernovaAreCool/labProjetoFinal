@@ -14,7 +14,7 @@ typedef struct produto {
     int id;
     char * nome;
     int quantidade;
-    int n_restoque;
+    int n_estoque;
     char * desc;
     float preco;
     struct produto *prox;
@@ -38,15 +38,29 @@ void reescrever(){
 }
 
 //Adiciona um item ao começo da lista
-void addlista(produto *a){
-    if (tam == 0){
-        inicio = a;
-    }else{
-        a->prox = inicio;
-        inicio = a;
-    }
-    tam++;
+void addlista(int id, char nome, int quantidade, int estoque, char desc, float preco){
+    produto *novo = malloc(sizeof(produto));
+
+    printf("========================ADICIONAR PRODUTOS========================\n");
+
+    printf("ID:\n");
+    scanf("%d", &id);
+
+    printf("Nome:\n");
+    scanf("%s", &nome);
+
+    printf("Preco:\n");
+    scanf("%f", &preco);
+
+    printf("Quantidade:\n");
+    scanf("%d", &quantidade);
+
+    novo->prox = inicio;
+    inicio = novo;
+
+    inicializar();
 }
+
 
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
@@ -63,6 +77,7 @@ void imprimir(){
 void imprimir_produto(produto* p) {
     printf("%i\t%s\t%i\t\t%s\t\t%f\n", p->id, p->nome, p->quantidade, p->desc, p->preco);
 }
+<<<<<<< HEAD
 
 
 // Doi minha alma mas dps eu melhoro isso; -supernova
@@ -87,6 +102,12 @@ produto* pegar_p_via_nome(char nome[]) {
 
         atual = atual->prox;
     }
+=======
+<<<<<<< HEAD
+=======
+produto pegar_p_via_nome(char nome[]) {
+    
+>>>>>>> 3683e52d9f5075560a212bf171615712b0469660
 }
 
 
@@ -103,6 +124,7 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
 
     return produto_n;
 }
+>>>>>>> dae228843993f826e415b094b5afd07d23a74924
 
 produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
 
@@ -137,7 +159,7 @@ FILE* arquivo_inicial() {
 }
 
 void checar_quantidade_produtos(produto *p) {
-    if (p->quantidade >= p->n_restoque) 
+    if (p->quantidade >= p->n_estoque) 
         printf("!!! Produto %s está acima do limite de restoque.", p->nome);
 
     return;
