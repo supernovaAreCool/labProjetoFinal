@@ -74,14 +74,6 @@ void imprimir(){
     }
 }
 
-<<<<<<< HEAD
-
-
-//Pergunta ao usuário qual identificador(pode ser o código do produto ou o nome dele) ele vai usar para remover o produto e depois remove ele, não vai apagar na memória porque deu preguiça
-
-produto pegar_p_via_cod(int id) {
-
-=======
 void imprimir_produto(produto* p) {
     printf("%i\t%s\t%i\t\t%s\t\t%f\n", p->id, p->nome, p->quantidade, p->desc, p->preco);
 }
@@ -125,7 +117,6 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto_n->desc = strdup(desc);
 
     return produto_n;
->>>>>>> cc3ca22c8a24405f9e83013dcee6b7e644e76614
 }
 
 produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
@@ -215,35 +206,23 @@ void menu() {
     while (funcionar){
         mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Relatório\n4- Sair\n");
         scanf("%i", &opcao);
-<<<<<<< HEAD
-        switch (opcao){
+        switch(opcao) {
         case 1:
-            cadastro();
-            break;
-        case 2: 
-            consultar();
-            break;
-        case 3:
-=======
-        if (opcao==1){
-            
-        }
-        if (opcao==2){
+        break;
+        case 2:
             consulta();
-        }
-        if (opcao==3){
->>>>>>> cc3ca22c8a24405f9e83013dcee6b7e644e76614
+        break;
+        case 3:
             relatorio();
-            break;
+        break;
         case 4:
             funcionar = 0;
             system(comando_limp);
             reescrever();
-            break;
-
+        break;
         default:
             printf("Numero Invalido! Tente novamente.");
-            break;
+        break;
         }
     }
     return 0;
