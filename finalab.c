@@ -18,6 +18,7 @@ typedef struct produto {
     char * desc;
     float preco;
     struct produto *prox;
+    struct produto *prev;
 } produto;
 
 //Duas variáveis globais referentes à lista de produtos
@@ -59,38 +60,18 @@ void imprimir(){
     }
 }
 
+
+
 //Pergunta ao usuário qual identificador(pode ser o código do produto ou o nome dele) ele vai usar para remover o produto e depois remove ele, não vai apagar na memória porque deu preguiça
-void removerlista(){
-    int opcao;
-    char * identificador;
-    produto * atual = inicio;
-    printf("Você deseja remover com base no:\n[1] - Código do produto\n[2] - Nome do produto");
-    scanf("%i", &opcao);
-    if (opcao==1){
-        printf("Qual o código do produto?\n");
-        gets(identificador);
-        if (inicio->id == atoi(identificador)){
-            inicio = inicio->prox;
-        }
-        for (int i=0; i<tam-1;i++){
-            if (atual->prox->id == atoi(identificador)){
-                atual->prox = atual->prox->prox;
-            }
-        }
-    }
-    if (opcao==2){
-        printf("Qual o nome do produto?\n");
-        gets(identificador);
-        if(*(inicio->nome) == identificador){
-            inicio = inicio->prox;
-        }
-        for (int i = 0; i<tam-1;i++){
-            if (atual->prox->nome = identificador){
-                atual->prox = atual->prox->prox;
-            }
-        }
-    }
+
+produto pegar_p_via_cod(int id) {
+
 }
+produto pegar_p_via_nome(char nome[]) {
+    
+}
+
+
 produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto *produto_n = (produto*)malloc(sizeof(produto));
     if (produto_n == NULL) return NULL;
@@ -162,21 +143,17 @@ void menu() {
     FILE *inventario = arquivo_inicial();
     inicializar();
     while (funcionar){
-        mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
+        mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Relatório\n4- Sair\n");
         scanf("%i", &opcao);
         if (opcao==1){
             
         }
         if (opcao==2){
-            imprimir();
         }
         if (opcao==3){
-
-        }
-        if (opcao==4){
             relatorio();
         }
-        if (opcao==5){
+        if (opcao==4){
             funcionar = 0;
             system(comando_limp);
             reescrever();
