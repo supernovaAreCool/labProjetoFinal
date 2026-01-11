@@ -38,32 +38,6 @@ void reescrever(){
 }
 
 //Adiciona um item ao começo da lista
-<<<<<<< HEAD
-<<<<<<< HEAD
-void addlista(int id, char nome, float preco, int quantidade){
-    produto *novo = malloc(sizeof(produto));
-
-    printf("========================ADICIONAR PRODUTOS========================\n");
-
-    printf("ID:\n");
-    scanf("%d", &id);
-
-    printf("Nome:\n");
-    scanf("%s", &nome);
-
-    printf("Preco:\n");
-    scanf("%f", &preco);
-
-    printf("Quantidade:\n");
-    scanf("%d", &quantidade);
-
-    novo->prox = inicio;
-    inicio = novo;
-
-    reescrever();
-=======
-=======
->>>>>>> parent of bb41ed9 (msg)
 void addlista(produto *a){
     if (tam == 0){
         inicio = a;
@@ -72,10 +46,6 @@ void addlista(produto *a){
         inicio = a;
     }
     tam++;
-<<<<<<< HEAD
->>>>>>> parent of bb41ed9 (msg)
-=======
->>>>>>> parent of bb41ed9 (msg)
 }
 
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
