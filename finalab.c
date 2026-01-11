@@ -6,7 +6,7 @@ typedef struct produto {
     int id;
     char * nome;
     int quantidade;
-    int n_restoque;
+    int n_estoque;
     char * desc;
     float preco;
     struct produto *prox;
@@ -27,15 +27,29 @@ void reescrever(){
 }
 
 //Adiciona um item ao começo da lista
-void addlista(produto *a){
-    if (tam == 0){
-        inicio = a;
-    }else{
-        a->prox = inicio;
-        inicio = a;
-    }
-    tam++;
+void addlista(int id, char nome, int quantidade, int estoque, char desc, float preco){
+    produto *novo = malloc(sizeof(produto));
+
+    printf("========================ADICIONAR PRODUTOS========================\n");
+
+    printf("ID:\n");
+    scanf("%d", &id);
+
+    printf("Nome:\n");
+    scanf("%s", &nome);
+
+    printf("Preco:\n");
+    scanf("%f", &preco);
+
+    printf("Quantidade:\n");
+    scanf("%d", &quantidade);
+
+    novo->prox = inicio;
+    inicio = novo;
+
+    inicializar();
 }
+
 
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
@@ -78,19 +92,6 @@ void removerlista(){
         }
     }
 }
-produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
-    produto *produto_n = (produto*)malloc(sizeof(produto));
-    if (produto_n == NULL) return NULL;
-
-    produto_n->id = id;
-    produto_n->quantidade = quantidade;
-    produto_n->preco = preco;
-    
-    produto_n->nome = strdup(nome);
-    produto_n->desc = strdup(desc);
-
-    return produto_n;
-}
 
 produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
 
@@ -122,7 +123,7 @@ FILE* arquivo_inicial() {
 }
 
 void checar_quantidade_produtos(produto *p) {
-    if (p->quantidade >= p->n_restoque) 
+    if (p->quantidade >= p->n_estoque) 
         printf("!!! Produto %s está acima do limite de restoque.", p->nome);
 
     return;
