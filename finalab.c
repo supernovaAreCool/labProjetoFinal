@@ -39,6 +39,7 @@ void reescrever(){
 
 //Adiciona um item ao começo da lista
 <<<<<<< HEAD
+<<<<<<< HEAD
 void addlista(int id, char nome, float preco, int quantidade){
     produto *novo = malloc(sizeof(produto));
 
@@ -61,6 +62,8 @@ void addlista(int id, char nome, float preco, int quantidade){
 
     reescrever();
 =======
+=======
+>>>>>>> parent of bb41ed9 (msg)
 void addlista(produto *a){
     if (tam == 0){
         inicio = a;
@@ -69,6 +72,9 @@ void addlista(produto *a){
         inicio = a;
     }
     tam++;
+<<<<<<< HEAD
+>>>>>>> parent of bb41ed9 (msg)
+=======
 >>>>>>> parent of bb41ed9 (msg)
 }
 
@@ -103,8 +109,24 @@ produto* pegar_p_via_cod(int id) {
         atual = atual->prox;
     }
 }
+<<<<<<< HEAD
 produto* pegar_p_via_nome(char nome[]) {
     produto * atual = inicio;
+=======
+produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
+    produto *produto_n = (produto*)malloc(sizeof(produto));
+    if (produto_n == NULL) return NULL;
+
+    produto_n->id = id;
+    produto_n->quantidade = quantidade;
+    produto_n->preco = preco;
+    
+    produto_n->nome = strdup(nome);
+    produto_n->desc = strdup(desc);
+
+    return produto_n;
+}
+>>>>>>> parent of bb41ed9 (msg)
 
     for (int i = 0; i<tam; i++){
         if (atual->nome == nome)
