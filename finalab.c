@@ -38,7 +38,7 @@ void reescrever(){
 }
 
 //Adiciona um item ao começo da lista
-void addlista(int id, char nome, int quantidade, int estoque, char desc, float preco){
+void addlista(int id, char nome, float preco, int quantidade){
     produto *novo = malloc(sizeof(produto));
 
     printf("========================ADICIONAR PRODUTOS========================\n");
@@ -58,7 +58,7 @@ void addlista(int id, char nome, int quantidade, int estoque, char desc, float p
     novo->prox = inicio;
     inicio = novo;
 
-    inicializar();
+    reescrever();
 }
 
 
@@ -81,27 +81,6 @@ void imprimir(){
 produto pegar_p_via_cod(int id) {
 
 }
-<<<<<<< HEAD
-=======
-produto pegar_p_via_nome(char nome[]) {
-    
-}
-
-
-produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
-    produto *produto_n = (produto*)malloc(sizeof(produto));
-    if (produto_n == NULL) return NULL;
-
-    produto_n->id = id;
-    produto_n->quantidade = quantidade;
-    produto_n->preco = preco;
-    
-    produto_n->nome = strdup(nome);
-    produto_n->desc = strdup(desc);
-
-    return produto_n;
-}
->>>>>>> dae228843993f826e415b094b5afd07d23a74924
 
 produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
 
@@ -162,18 +141,25 @@ void menu() {
     while (funcionar){
         mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Relatório\n4- Sair\n");
         scanf("%i", &opcao);
-        if (opcao==1){
-            
-        }
-        if (opcao==2){
-        }
-        if (opcao==3){
+        switch (opcao){
+        case 1:
+            cadastro();
+            break;
+        case 2: 
+            consultar();
+            break;
+        case 3:
             relatorio();
-        }
-        if (opcao==4){
+            break;
+        case 4:
             funcionar = 0;
             system(comando_limp);
             reescrever();
+            break;
+
+        default:
+            printf("Numero Invalido! Tente novamente.");
+            break;
         }
     }
     return 0;
