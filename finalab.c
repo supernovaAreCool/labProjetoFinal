@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+    const char *comando_limp = "cls";
+#elif defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+    const char *comando_limp = "clear";
+#else
+    const char *comando_limp = "clear";
+#endif
+
 typedef struct produto {
     int id;
     char * nome;
@@ -128,12 +136,17 @@ void checar_quantidade_produtos(produto *p) {
     return;
 }
 
-int main() {
+void mensagem(char msg[]) {
+    system(comando_limp);
+    printf("%s", msg);
+}
+
+void menu() {
     int funcionar = 1, opcao;
     FILE *inventario = arquivo_inicial();
     inicializar();
     while (funcionar){
-        printf("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
+        mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
         scanf("%i", &opcao);
         if (opcao==1){
             
@@ -149,8 +162,13 @@ int main() {
         }
         if (opcao==5){
             funcionar = 0;
+            system(comando_limp);
             reescrever();
         }
     }
     return 0;
+}
+
+int main() {
+    menu();
 }
