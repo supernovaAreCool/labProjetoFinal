@@ -119,12 +119,6 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     return produto_n;
 }
 
-produto* inserir(int id, char *nome, int quantidade, char *desc, float preco, FILE *inv) {
-
-
-}
-
-
 void inicializar(){
     char linha[1024];
     FILE *arquivo = fopen("inventario.txt", "r");
@@ -172,13 +166,11 @@ void relatorio() {
 }
 
 void consulta() {
-    mensagem("Consulte via: \n1 - ID\n2 - Nome\n");
-
     int i;
-    scanf("%d", &i);
+
+    i = menu_generico("Consulte via: \n1 - ID\n2 - Nome\n");
 
     produto* p;
-    char s[1];
 
     switch (i) {
         case 1:
@@ -186,17 +178,53 @@ void consulta() {
             mensagem("Insira o id: ");
             scanf("%d", &id);
             p = pegar_p_via_cod(id);
-            break;
+        break;
         case 2:
-        char nome[100];
+            char nome[100];
             mensagem("Insira o nome: ");
             scanf("%s", &nome);
             p = pegar_p_via_nome(nome);
-            break;
+        break;
     }
 
     imprimir_produto(p);
-    scanf("%s", &s);
+    modificar_produto_quantidade();
+    
+}
+
+void modificar_produto_quantidade() {
+    int i = menu_generico("1. Modificar quantidade do produto.\n2. Sair\n>");
+
+    switch () {
+        case 1:
+            int mod;
+            mod = menu_generico("Insira a quantidade para modificar (positivo aumenta, negativo diminui): ");
+            p->quantidade += mod;
+
+            printf("Modificado com sucesso. Nova quantidade: %d", p->quantidade);
+
+            reescrever();
+            modificar_produto_quantidade();
+        break;
+        case 2:
+            return;
+        break;
+    }
+        
+    
+}
+
+void esperar() {
+    char s;
+    scanf("%c", &s);
+}
+
+int menu_generico(char msg[]) {
+    mensagem(msg);
+    int op;
+    scanf("%d", &op);
+
+    return op;
 }
 
 void menu() {
