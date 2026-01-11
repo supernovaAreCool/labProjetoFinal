@@ -2,6 +2,14 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if defined(_WIN32) || defined(_WIN64)
+    const char *comando_limp = "cls";
+#elif defined(__linux__) || defined(__unix__) || defined(__APPLE__)
+    const char *comando_limp = "clear";
+#else
+    const char *comando_limp = "clear";
+#endif
+
 typedef struct produto {
     int id;
     char * nome;
@@ -15,6 +23,8 @@ typedef struct produto {
 //Duas variáveis globais referentes à lista de produtos
 produto *inicio = NULL;
 int tam = 0;
+float v_total = 0.0f;
+unsigned int q_total = 0;
 
 //Essa função serve para escrever o que estiver na lista do programa pro txt, é interessante colocar ela no final de toda função que muda alguma coisa na lista, por exemplo a função adicioinar ou a função remover
 void reescrever(){
@@ -54,8 +64,11 @@ void addlista(int id, char nome, int quantidade, int estoque, char desc, float p
 //Imprime todos os produtos(i.e cada um de seus 'atributos') percorrendo a lista
 void imprimir(){
     produto * atual = inicio;
+
+    printf("ID\tNome\t\tQuantidade\tDescrição\t\tPreço\n");
+
     for (int i = 0; i<tam; i++){
-        printf("%i %s %i %s %f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        printf("%i\t%s\t%i\t\t%s\t\t%f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
         atual = atual->prox;
     }
 }
@@ -109,6 +122,9 @@ void inicializar(){
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
         addlista(criar_no(atoi(id), strdup(nome), atoi(quantidade), strdup(desc), atof(preco)));
+
+        q_total += atoi(quantidade);
+        v_total += atof(preco);
     }
 }
 
@@ -129,12 +145,25 @@ void checar_quantidade_produtos(produto *p) {
     return;
 }
 
-int main() {
+void mensagem(char msg[]) {
+    system(comando_limp);
+    printf("%s", msg);
+}
+
+void relatorio() {
+    imprimir();
+    printf("\nTotal de itens: %d, Valor total: %f, Quantidade total de itens: %u\n", tam, v_total, q_total);
+
+    char s[1];
+    scanf("%s", &s);
+}
+
+void menu() {
     int funcionar = 1, opcao;
     FILE *inventario = arquivo_inicial();
     inicializar();
     while (funcionar){
-        printf("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
+        mensagem("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Entradas/Saídas\n4- Relatório\n5- Sair\n");
         scanf("%i", &opcao);
         if (opcao==1){
             
@@ -146,12 +175,17 @@ int main() {
 
         }
         if (opcao==4){
-
+            relatorio();
         }
         if (opcao==5){
             funcionar = 0;
+            system(comando_limp);
             reescrever();
         }
     }
     return 0;
+}
+
+int main() {
+    menu();
 }
