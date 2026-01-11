@@ -55,20 +55,38 @@ void imprimir(){
     printf("ID\tNome\t\tQuantidade\tDescrição\t\tPreço\n");
 
     for (int i = 0; i<tam; i++){
-        printf("%i\t%s\t%i\t\t%s\t\t%f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        imprimir_produto(atual);
         atual = atual->prox;
     }
 }
 
-
-
-//Pergunta ao usuário qual identificador(pode ser o código do produto ou o nome dele) ele vai usar para remover o produto e depois remove ele, não vai apagar na memória porque deu preguiça
-
-produto pegar_p_via_cod(int id) {
-
+void imprimir_produto(produto* p) {
+    printf("%i\t%s\t%i\t\t%s\t\t%f\n", p->id, p->nome, p->quantidade, p->desc, p->preco);
 }
-produto pegar_p_via_nome(char nome[]) {
-    
+
+
+// Doi minha alma mas dps eu melhoro isso; -supernova
+// ooga booga, control c control v
+produto* pegar_p_via_cod(int id) {
+    produto * atual = inicio;
+
+    for (int i = 0; i<tam; i++){
+        if (atual->id == id)
+            return atual;
+        
+
+        atual = atual->prox;
+    }
+}
+produto* pegar_p_via_nome(char nome[]) {
+    produto * atual = inicio;
+
+    for (int i = 0; i<tam; i++){
+        if (atual->nome == nome)
+            return atual;
+
+        atual = atual->prox;
+    }
 }
 
 
@@ -138,6 +156,34 @@ void relatorio() {
     scanf("%s", &s);
 }
 
+void consulta() {
+    mensagem("Consulte via: \n1 - ID\n2 - Nome\n");
+
+    int i;
+    scanf("%d", &i);
+
+    produto* p;
+    char s[1];
+
+    switch (i) {
+        case 1:
+            int id;
+            mensagem("Insira o id: ");
+            scanf("%d", &id);
+            p = pegar_p_via_cod(id);
+            break;
+        case 2:
+        char nome[100];
+            mensagem("Insira o nome: ");
+            scanf("%s", &nome);
+            p = pegar_p_via_nome(nome);
+            break;
+    }
+
+    imprimir_produto(p);
+    scanf("%s", &s);
+}
+
 void menu() {
     int funcionar = 1, opcao;
     FILE *inventario = arquivo_inicial();
@@ -149,6 +195,7 @@ void menu() {
             
         }
         if (opcao==2){
+            consulta();
         }
         if (opcao==3){
             relatorio();
