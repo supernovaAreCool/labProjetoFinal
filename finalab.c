@@ -6,6 +6,7 @@ typedef struct produto {
     int id;
     char * nome;
     int quantidade;
+    int n_restoque;
     char * desc;
     float preco;
     struct produto *prox;
@@ -27,7 +28,7 @@ void reescrever(){
 
 //Adiciona um item ao começo da lista
 void addlista(produto *a){
-    if (tam==0){
+    if (tam == 0){
         inicio = a;
     }else{
         a->prox = inicio;
@@ -118,6 +119,13 @@ FILE* arquivo_inicial() {
         printf("Erro ao abrir ou criar o arquivo inventario.txt\n");
         return NULL;
     }
+}
+
+void checar_quantidade_produtos(produto *p) {
+    if (p->quantidade >= p->n_restoque) 
+        printf("!!! Produto %s está acima do limite de restoque.", p->nome);
+
+    return;
 }
 
 int main() {
