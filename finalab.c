@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #if defined(_WIN32) || defined(_WIN64)
     const char *comando_limp = "cls";
@@ -58,7 +59,7 @@ int main() {
 }
 
 //Essa função serve para escrever o que estiver na lista do programa pro txt, é interessante colocar ela no final de toda função que muda alguma coisa na lista, por exemplo a função adicioinar ou a função remover
-void reescrever(){
+void reescrever() {
     produto *atual = inicio;
     FILE * arquivo = fopen("inventario.txt", "w");
     for (int i = 0; i<tam; i++){
@@ -71,7 +72,7 @@ void reescrever(){
 
 // Imprime o produto à tela
 void imprimir_produto(produto* p) {
-    printf("%i\t%s\t%i\t\t%s\t\t%f\n", p->id, p->nome, p->quantidade, p->desc, p->preco);
+    printf("%-4i %-12s %-10i %-12s %-8.2f %-9d\n", p->id, p->nome, p->quantidade, p->desc, p->preco, p->n_restoque);
 }
 
 //Adiciona um item ao começo da lista
@@ -89,7 +90,7 @@ void addlista(produto *a){
 void imprimir(){
     produto * atual = inicio;
 
-    printf("ID\tNome\t\tQuantidade\tDescrição\t\tPreço\n");
+    printf("%-4s %-12s %-10s %-12s %-8s %-9s\n", "ID", "Nome", "Quantidade", "Descrição", "Preço", "Restoque");
 
     for (int i = 0; i<tam; i++){
         imprimir_produto(atual);
@@ -103,20 +104,20 @@ void imprimir(){
 
 // Função generica que retorna um produto de acordo com uma chave. Podendo a chave ser um id ou um nome.
 produto* pegar_produto(void *key, ProdutoKey t) {
-    int achado = 0;
+    bool achado = false;
     produto * atual = inicio;
     
     while (atual != NULL) {
         switch (t) {
             case KEY_ID:
                 if (atual->id == *(int*) key)
-                    achado = 1;
+                    achado = true;
                     return atual;
 
             break;
             case KEY_NOME:
                 if (strcmp(atual->nome, (char*)key) == 0)
-                    achado = 1;
+                    achado = true;
                     return atual;
             break;
             default:
@@ -169,6 +170,8 @@ void inicializar(){
         q_total += atoi(quantidade);
         v_total += atof(preco) * atoi(quantidade);
     }
+
+    fclose(arquivo);
 }
 
 // Cria o arquivo inventario inicial se hourver, caso o contrario, apenas abre o arquivo;
@@ -184,13 +187,13 @@ FILE* arquivo_inicial() {
 }
 
 void checar_quantidade_produtos() {
-    int achado = 0;
+    bool achado = false;
     produto * atual = inicio;
 
     while (atual != NULL) {
         if (atual->quantidade >= atual->n_restoque) {
             printf("\n!!! Produto %s está acima do limite de restoque.", atual->nome);
-            achado = 1;
+            achado = true;
         }
 
         atual = atual->prox;
@@ -331,7 +334,7 @@ void cadastrar_produto() {
 
 
 void menu() {
-    int funcionar = 1, op;
+    bool funcionar = true, op;
     FILE *inventario = arquivo_inicial();
     inicializar();
     while (funcionar) {
@@ -349,7 +352,7 @@ void menu() {
             relatorio();
         break;
         case 4:
-            funcionar = 0;
+            funcionar = false;
             system(comando_limp);
             reescrever();
         break;
