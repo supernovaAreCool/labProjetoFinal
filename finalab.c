@@ -38,7 +38,7 @@ void imprimir_produto(produto* p);
 void addlista(produto *a);
 void imprimir();
 produto* pegar_produto(void *key, ProdutoKey t);
-produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco);
+produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco, int n_restoque);
 void inicializar();
 FILE* arquivo_inicial();
 void checar_quantidade_produtos();
@@ -62,9 +62,11 @@ void reescrever(){
     produto *atual = inicio;
     FILE * arquivo = fopen("inventario.txt", "w");
     for (int i = 0; i<tam; i++){
-        fprintf(arquivo, "%i;%s;%i;%s;%f\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco);
+        fprintf(arquivo, "%i;%s;%i;%s;%f;%d\n", atual->id, atual->nome, atual->quantidade, atual->desc, atual->preco, atual->n_restoque);
         atual = atual->prox;
     }
+    
+    fclose(arquivo);
 }
 
 // Imprime o produto à tela
@@ -101,17 +103,20 @@ void imprimir(){
 
 // Função generica que retorna um produto de acordo com uma chave. Podendo a chave ser um id ou um nome.
 produto* pegar_produto(void *key, ProdutoKey t) {
+    int achado = 0;
     produto * atual = inicio;
     
     while (atual != NULL) {
         switch (t) {
             case KEY_ID:
                 if (atual->id == *(int*) key)
+                    achado = 1;
                     return atual;
 
             break;
             case KEY_NOME:
                 if (strcmp(atual->nome, (char*)key) == 0)
+                    achado = 1;
                     return atual;
             break;
             default:
@@ -121,11 +126,14 @@ produto* pegar_produto(void *key, ProdutoKey t) {
 
         atual = atual->prox;
     }
+
+    if (!achado)
+        return NULL;
 }
 
 
 // Cria um produto na lista carregada.
-produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
+produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco, int n_restoque) {
     produto *produto_n = (produto*)malloc(sizeof(produto));
     if (produto_n == NULL) return NULL;
 
@@ -136,23 +144,30 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco) {
     produto_n->nome = strdup(nome);
     produto_n->desc = strdup(desc);
 
+    produto_n->n_restoque = n_restoque;
+
     return produto_n;
 }
 
 void inicializar(){
     char linha[1024];
     FILE *arquivo = fopen("inventario.txt", "r");
+
+    if (!arquivo)
+        return;
+
     while (fgets(linha, sizeof(linha), arquivo) != NULL) {
         char *id = strtok(linha, ";");
         char *nome = strtok(NULL, ";");
         char *quantidade = strtok(NULL, ";");
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
+        char *n_restoque = strtok(NULL, ";");
 
-        addlista(criar_no(atoi(id), nome, atoi(quantidade), desc, atof(preco)));
+        addlista(criar_no(atoi(id), nome, atoi(quantidade), desc, atof(preco), atoi(n_restoque)));
         
         q_total += atoi(quantidade);
-        v_total += atof(preco);
+        v_total += atof(preco) * atoi(quantidade);
     }
 }
 
@@ -164,6 +179,8 @@ FILE* arquivo_inicial() {
         printf("Erro ao abrir ou criar o arquivo inventario.txt\n");
         return NULL;
     }
+
+    return inventario;
 }
 
 void checar_quantidade_produtos() {
@@ -242,6 +259,9 @@ void modificar_produto_quantidade(produto* p) {
             mod = menu_generico("Insira a quantidade para modificar (positivo aumenta, negativo diminui): ");
             p->quantidade += mod;
 
+            q_total += mod;
+            v_total += p->preco * mod;
+
             printf("Modificado com sucesso. Nova quantidade: %d\n\n", p->quantidade);
 
             reescrever();
@@ -298,7 +318,13 @@ void cadastrar_produto() {
     preco = atof(buf);
     buf[0] = '\0';
 
-    addlista(criar_no(tam+1, nome, quantidade, desc, preco));
+    int n_restoque = 0;
+    printf("Minimo de Restoque: ");
+    fgets(buf, sizeof(buf), stdin);
+    n_restoque = atoi(buf);
+    buf[0] = '\0';
+
+    addlista(criar_no(tam+1, nome, quantidade, desc, preco, n_restoque));
     reescrever();
 
 }
