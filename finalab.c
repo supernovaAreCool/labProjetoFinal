@@ -215,7 +215,7 @@ void consulta() {
         case 2:
             char nome[100];
             mensagem("Insira o nome: ");
-            scanf("%s", &nome);
+            gets(nome);
             p = pegar_produto(nome, KEY_NOME);
         break;
     }
@@ -321,6 +321,5 @@ void menu() {
 
         }
     }
-    return 0;
 }
 
