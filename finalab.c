@@ -11,6 +11,13 @@
     const char *comando_limp = "clear";
 #endif
 
+enum {
+    MENU_CADASTRAR = 1,
+    MENU_CONSULTAR,
+    MENU_RELATORIO,
+    MENU_SAIR
+};
+
 typedef enum {
     KEY_ID,
     KEY_NOME
@@ -41,7 +48,7 @@ void imprimir();
 produto* pegar_produto(void *key, ProdutoKey t);
 produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco, int n_restoque);
 void inicializar();
-FILE* arquivo_inicial();
+void arquivo_inicial();
 void checar_quantidade_produtos();
 void mensagem(char msg[]);
 void relatorio();
@@ -52,10 +59,39 @@ int menu_generico(char msg[]);
 void cadastrar_produto();
 void menu();
 
+char* prompt_string(char* buff, char* msg);
+int prompt_int(char* buff, char* msg);
+
+void liberar_lista();
+
+
 // fim dos prototipos, teehee.
 
 int main() {
     menu();
+}
+
+char* prompt_string(char* buff, char* msg) {
+    printf("%s", msg);
+    fgets(buff, 100, stdin);
+    buff[strcspn(buff,"\n")] = '\0';
+
+    return buff;
+}
+
+int prompt_int(char* buff, char* msg) {
+    int i;
+    printf("%s", msg);
+    fgets(buff, sizeof(buff), stdin);
+    i = atoi(buff);
+    buff[0] = '\0';
+
+    if (!i) {
+        printf("Input Invalido: Não foi possivel detectar numero em buffer.");
+        return -1;
+    }
+
+    return i;
 }
 
 //Essa função serve para escrever o que estiver na lista do programa pro txt, é interessante colocar ela no final de toda função que muda alguma coisa na lista, por exemplo a função adicioinar ou a função remover
@@ -111,25 +147,23 @@ produto* pegar_produto(void *key, ProdutoKey t) {
         switch (t) {
             case KEY_ID:
                 if (atual->id == *(int*) key)
-                    achado = true;
                     return atual;
 
             break;
             case KEY_NOME:
                 if (strcmp(atual->nome, (char*)key) == 0)
-                    achado = true;
                     return atual;
             break;
             default:
-            return NULL;
+                return NULL;
         }
 
 
         atual = atual->prox;
     }
 
-    if (!achado)
-        return NULL;
+
+    return NULL;
 }
 
 
@@ -147,6 +181,8 @@ produto* criar_no(int id, char *nome, int quantidade, char *desc, float preco, i
 
     produto_n->n_restoque = n_restoque;
 
+    produto_n->prox = NULL;
+
     return produto_n;
 }
 
@@ -163,7 +199,7 @@ void inicializar(){
         char *quantidade = strtok(NULL, ";");
         char *desc = strtok(NULL, ";");
         char *preco = strtok(NULL, ";");
-        char *n_restoque = strtok(NULL, ";");
+        char *n_restoque = strtok(NULL, ";\n");
 
         addlista(criar_no(atoi(id), nome, atoi(quantidade), desc, atof(preco), atoi(n_restoque)));
         
@@ -175,15 +211,17 @@ void inicializar(){
 }
 
 // Cria o arquivo inventario inicial se hourver, caso o contrario, apenas abre o arquivo;
-FILE* arquivo_inicial() {
+void arquivo_inicial() {
     FILE *inventario = fopen("inventario.txt", "a+");
 
     if (inventario == NULL) {
         printf("Erro ao abrir ou criar o arquivo inventario.txt\n");
-        return NULL;
+        fclose(inventario);
+        return;
     }
 
-    return inventario;
+    fclose(inventario);
+    return;
 }
 
 void checar_quantidade_produtos() {
@@ -221,7 +259,7 @@ void relatorio() {
 void consulta() {
     int i;
 
-    i = menu_generico("Consulte via: \n1 - ID\n2 - Nome\n");
+    i = menu_generico("Consulte via: \n[1] ID\n[2] Nome\n[3] Sair");
 
     produto* p;
     char buf[128];
@@ -240,6 +278,9 @@ void consulta() {
             nome[strcspn(nome ,"\n")] = '\0';
             p = pegar_produto(nome, KEY_NOME);
         break;
+        case 3:
+            return;
+        break;
     }
 
     if (!p) {
@@ -254,12 +295,17 @@ void consulta() {
 }
 
 void modificar_produto_quantidade(produto* p) {
-    int i = menu_generico("1. Modificar quantidade do produto.\n2. Sair\n> ");
+    int i = menu_generico("[1] Modificar quantidade do produto.\n[2] Sair");
 
     switch (i) {
         case 1:
             int mod;
             mod = menu_generico("Insira a quantidade para modificar (positivo aumenta, negativo diminui): ");
+
+            if (p->quantidade + mod < 0) {
+                printf("\nValor Invalido: quantidade resultante não pode ser menor que zero.");
+                return;
+            }
             p->quantidade += mod;
 
             q_total += mod;
@@ -280,18 +326,17 @@ void modificar_produto_quantidade(produto* p) {
 }
 
 void esperar() {
-    char s;
-    scanf(" %c", &s);
+    char s[16];
+    prompt_string(s, "");
 }
 
 int menu_generico(char msg[]) {
     mensagem(msg);
+    char buf[16];
 
-    char op[3];
-    fgets(op, sizeof(op), stdin);
-    op[strcspn(op,"\n")] = '\0';
+    int op = prompt_int(buf, "\n> ");
 
-    return atoi(op);
+    return op;
 }
 
 void cadastrar_produto() {
@@ -300,20 +345,13 @@ void cadastrar_produto() {
     char buf[20];
 
     char nome[100];
-    printf("Nome: ");
-    fgets(nome, sizeof(nome), stdin);
-    nome[strcspn(nome ,"\n")] = '\0';
+    prompt_string(nome, "Nome: ");
 
-    unsigned int quantidade;
-    printf("Quantidade: ");
-    fgets(buf, sizeof(buf), stdin);
-    quantidade = atoi(buf);
-    buf[0] = '\0';
+    int quantidade;
+    quantidade = prompt_int(buf, "Quantidade: ");
 
     char desc[100];
-    printf("Descrição: ");
-    fgets(desc, 100, stdin);
-    desc[strcspn(desc,"\n")] = '\0';
+    prompt_string(desc, "Descrição: ");
 
     float preco = 0.0f;
     printf("Preço: ");
@@ -321,11 +359,13 @@ void cadastrar_produto() {
     preco = atof(buf);
     buf[0] = '\0';
 
-    int n_restoque = 0;
-    printf("Minimo de Restoque: ");
-    fgets(buf, sizeof(buf), stdin);
-    n_restoque = atoi(buf);
-    buf[0] = '\0';
+    int n_restoque;
+    n_restoque = prompt_int(buf, "Minimo de Restoque: ");
+
+    q_total += quantidade;
+    v_total += preco * quantidade;
+
+
 
     addlista(criar_no(tam+1, nome, quantidade, desc, preco, n_restoque));
     reescrever();
@@ -334,32 +374,45 @@ void cadastrar_produto() {
 
 
 void menu() {
-    bool funcionar = true, op;
-    FILE *inventario = arquivo_inicial();
+    bool funcionar = true;
+    int op = 0;
+    arquivo_inicial();
     inicializar();
     while (funcionar) {
 
-        op = menu_generico("O que você deseja fazer?\n1- Cadastrar\n2- Consultar\n3- Relatório\n4- Sair\n");
+        op = menu_generico("O que você deseja fazer?\n[1] Cadastrar\n[2] Consultar\n[3] Relatório\n[4] Sair\n");
 
         switch(op) {
-        case 1:
+        case MENU_CADASTRAR:
             cadastrar_produto();
         break;
-        case 2:
+        case MENU_CONSULTAR:
             consulta();
         break;
-        case 3:
+        case MENU_RELATORIO:
             relatorio();
         break;
-        case 4:
+        case MENU_SAIR:
             funcionar = false;
             system(comando_limp);
             reescrever();
+            liberar_lista();
         break;
         default:
             printf("Numero Invalido! Tente novamente.\n\n");
 
         }
+    }
+}
+
+void liberar_lista(void) {
+    produto *atual = inicio;
+    while (atual) {
+        produto *next = atual->prox;
+        free(atual->nome);
+        free(atual->desc);
+        free(atual);
+        atual = next;
     }
 }
 
