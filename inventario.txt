@@ -1,1 +1,1 @@
-1;batata;1;batatao;1.000000
+1;batata;1;batatao;10.000000

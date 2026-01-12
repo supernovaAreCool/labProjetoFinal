@@ -204,18 +204,20 @@ void consulta() {
     i = menu_generico("Consulte via: \n1 - ID\n2 - Nome\n");
 
     produto* p;
-
+    char buf[128];
     switch (i) {
         case 1:
             int id;
             mensagem("Insira o id: ");
-            scanf("%d", &id);
+            fgets(buf, sizeof(buf), stdin);
+            id = atoi(buf);
             p = pegar_produto(&id, KEY_ID);
         break;
         case 2:
             char nome[100];
-            mensagem("Insira o nome: ");
-            gets(nome);
+            printf("Nome: ");
+            fgets(nome, sizeof(nome), stdin);
+            nome[strcspn(nome ,"\n")] = '\0';
             p = pegar_produto(nome, KEY_NOME);
         break;
     }
@@ -261,31 +263,40 @@ void esperar() {
 
 int menu_generico(char msg[]) {
     mensagem(msg);
-    int op;
-    scanf("%d", &op);
 
-    return op;
+    char op[3];
+    fgets(op, sizeof(op), stdin);
+    op[strcspn(op,"\n")] = '\0';
+
+    return atoi(op);
 }
 
 void cadastrar_produto() {
     printf("Cadastro de produto: \n");
 
+    char buf[20];
 
     char nome[100];
-    printf("Nome:");
-    scanf("%s", nome);
+    printf("Nome: ");
+    fgets(nome, sizeof(nome), stdin);
+    nome[strcspn(nome ,"\n")] = '\0';
 
     unsigned int quantidade;
     printf("Quantidade: ");
-    scanf("%u", &quantidade);
+    fgets(buf, sizeof(buf), stdin);
+    quantidade = atoi(buf);
+    buf[0] = '\0';
 
-    char desc[100] = "\0";
+    char desc[100];
     printf("Descrição: ");
-    scanf("%s", desc);
+    fgets(desc, 100, stdin);
+    desc[strcspn(desc,"\n")] = '\0';
 
     float preco = 0.0f;
     printf("Preço: ");
-    scanf("%f", &preco);
+    fgets(buf, sizeof(buf), stdin);
+    preco = atof(buf);
+    buf[0] = '\0';
 
     addlista(criar_no(tam+1, nome, quantidade, desc, preco));
     reescrever();
@@ -317,7 +328,7 @@ void menu() {
             reescrever();
         break;
         default:
-            printf("Numero Invalido! Tente novamente.");
+            printf("Numero Invalido! Tente novamente.\n\n");
 
         }
     }
